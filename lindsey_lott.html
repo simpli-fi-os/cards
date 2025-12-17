@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow"> 
+    <meta name="apple-mobile-web-app-title" content="Simpli-FI"> 
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Lindsey Lott | Simpli-FI Life">
+    <meta property="og:description" content="Founder & Lead Organizer at Simpli-FI Life.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/simpli-fi-os/assets/abc740cc26a619c8153bbfeafbcb85c23879fcdf/lindsey-lott.jpg">
+    
+    <title>Lindsey Lott | Simpli-FI Life</title>
+    
+    <!-- Home Screen Icon & Favicon -->
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            primary: '#214F4B',   /* Velvet Teal */
+                            accent: '#E27D60',    /* Spiced Coral */
+                            pop: '#98A6D4',       /* Soft Cornflower */
+                            canvas: '#FBF9F7',    /* Oatmeal (Paper Base) */
+                            surface: '#EFEFEF',   
+                        },
+                        neu: {
+                            base: '#FBF9F7',      /* WARM PAPER BASE */
+                            shadow: '#D6D3CD',    /* Warm Shadow */
+                            highlight: '#FFFFFF',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    boxShadow: {
+                        /* Soft UI / Neumorphic Shadows for Oatmeal Paper */
+                        'neu-flat': '9px 9px 18px #D6D3CD, -9px -9px 18px #FFFFFF',
+                        'neu-pressed': 'inset 6px 6px 12px #D6D3CD, inset -6px -6px 12px #FFFFFF',
+                        'neu-icon': '5px 5px 10px #D6D3CD, -5px -5px 10px #FFFFFF',
+                        'neu-float': '25px 25px 50px #C5C2BC, -25px -25px 50px #ffffff',
+                    },
+                    backgroundImage: {
+                        /* Subtle Noise Texture for Paper Feel */
+                        'paper-noise': `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E")`,
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #FBF9F7; 
+            /* overflow is handled by views */
+        }
+        
+        /* Animations */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: opacity 300ms, transform 300ms; }
+        .modal-exit { opacity: 1; transform: scale(1); }
+        .modal-exit-active { opacity: 0; transform: scale(0.95); transition: opacity 200ms, transform 200ms; }
+        
+        a, button { -webkit-tap-highlight-color: transparent; }
+
+        /* Physics Elements (Portrait Only) */
+        .falling-box {
+            position: absolute;
+            background-color: #D4A373;
+            border: 2px solid #BC8A5F;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .falling-box::after {
+            content: '';
+            width: 100%;
+            height: 2px;
+            background-color: #BC8A5F;
+            position: absolute;
+            top: 50%;
+        }
+        
+        .rising-check {
+            position: absolute;
+            color: #214F4B;
+            pointer-events: none;
+            z-index: 0;
+            font-weight: bold;
+        }
+
+        /* Scroll Container */
+        #scroll-container {
+            height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 120px;
+        }
+
+        /* --- ORIENTATION ANIMATION LOGIC --- */
+        
+        /* 1. Portrait View (Default State) */
+        #portrait-view {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+            /* Smooth transition for morphing out */
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 2. Landscape View (Hidden State) */
+        #landscape-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20; /* Sits on top */
+            
+            /* Hidden State Properties */
+            opacity: 0;
+            pointer-events: none; /* Click-through when hidden */
+            transform: scale(1.1) rotate(-3deg); /* Slightly zoomed and tilted */
+            filter: blur(8px);
+            
+            /* Smooth transition for morphing in */
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* Flex layout for centering */
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3. LANDSCAPE MODE ACTIVE (The Trigger) */
+        @media (orientation: landscape) {
+            
+            /* Hide Portrait View */
+            #portrait-view {
+                opacity: 0;
+                transform: scale(0.95); /* Recedes slightly */
+                filter: blur(4px);
+                pointer-events: none;
+            }
+
+            /* Show Landscape View */
+            #landscape-view {
+                opacity: 1;
+                pointer-events: auto;
+                transform: scale(1) rotate(0deg); /* Snaps to perfect center */
+                filter: blur(0px);
+            }
+            
+            body { overflow: hidden; } /* Lock scrolling in landscape */
+        }
+        
+        /* Letterpress Text Effect (Green Ink) */
+        .text-pressed-green {
+            color: #214F4B; /* Brand Primary */
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.8), -1px -1px 0px rgba(33, 79, 75, 0.05);
+        }
+    </style>
+</head>
+<body class="fixed inset-0 bg-brand-canvas text-gray-700 bg-[radial-gradient(#214F4B_1px,transparent_1px)] [background-size:24px_24px]">
+
+    <!-- ========================================== -->
+    <!--          PORTRAIT VIEW (Mobile Vertical)   -->
+    <!-- ========================================== -->
+    <div id="portrait-view" class="w-full h-full relative flex-col">
+        
+        <!-- Physics Canvas Overlay -->
+        <div id="physics-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+        <!-- Scrollable Area -->
+        <div id="scroll-container" class="w-full flex justify-center p-4">
+            
+            <!-- Card Container (Main content) -->
+            <main id="main-card" class="w-full max-w-md bg-white rounded-[2rem] shadow-2xl relative flex flex-col shrink-0 my-auto transition-transform duration-75 will-change-transform overflow-hidden border border-white/40">
+                
+                <!-- Top Banner -->
+                <div class="h-32 bg-brand-primary relative overflow-hidden shrink-0">
+                    <!-- Logo -->
+                    <div class="absolute top-4 left-4 z-10 flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center text-white font-serif text-xl italic border border-white/20">S</div>
+                        <span class="font-serif text-white font-bold tracking-tight text-sm opacity-90">Simpli-FI <span class="font-light text-brand-pop">Life</span></span>
+                    </div>
+
+                    <!-- QR Trigger Button -->
+                    <button onclick="toggleQR()" aria-label="Show QR Code" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all border border-white/10 shadow-lg group">
+                        <i data-lucide="qr-code" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    </button>
+
+                    <!-- Background Art -->
+                    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#98A6D4_1px,transparent_1px)] [background-size:14px_14px]"></div>
+                    <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-brand-accent rounded-full opacity-30 blur-3xl"></div>
+                    <div class="absolute top-0 right-10 w-24 h-24 bg-brand-pop rounded-full opacity-20 blur-2xl"></div>
+                </div>
+
+                <!-- Profile Image -->
+                <div class="relative px-8 -mt-16 mb-6 text-center shrink-0">
+                    <div class="inline-block relative">
+                        <div class="w-32 h-32 rounded-full p-1.5 bg-white shadow-lg flex items-center justify-center relative z-10">
+                            <div class="w-full h-full rounded-full overflow-hidden relative">
+                                <img id="profile-photo" src="https://raw.githubusercontent.com/simpli-fi-os/assets/abc740cc26a619c8153bbfeafbcb85c23879fcdf/lindsey-lott.jpg" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey&backgroundColor=E27D60'" alt="Lindsey Lott" class="w-full h-full object-cover object-center">
+                            </div>
+                        </div>
+                        <!-- Verified Badge -->
+                        <div class="absolute bottom-2 right-2 z-20 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center text-brand-accent">
+                            <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h1 class="font-serif text-3xl font-bold text-gray-800">Lindsey Lott</h1>
+                        <p class="text-brand-accent font-bold text-xs tracking-widest uppercase mt-2">Founder & Lead Organizer</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons (Standard) -->
+                <div class="grid grid-cols-4 gap-4 px-6 mb-8 shrink-0">
+                    <a href="#" class="flex flex-col items-center gap-2 group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-canvas border border-brand-surface shadow-sm flex items-center justify-center text-gray-500 group-hover:bg-brand-primary group-hover:text-white transition-all duration-200">
+                            <i data-lucide="phone" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wide">Call</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center gap-2 group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-canvas border border-brand-surface shadow-sm flex items-center justify-center text-gray-500 group-hover:bg-brand-primary group-hover:text-white transition-all duration-200">
+                            <i data-lucide="mail" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wide">Email</span>
+                    </a>
+                    <a href="#" target="_blank" class="flex flex-col items-center gap-2 group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-canvas border border-brand-surface shadow-sm flex items-center justify-center text-gray-500 group-hover:bg-brand-primary group-hover:text-white transition-all duration-200">
+                            <i data-lucide="globe" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wide">Site</span>
+                    </a>
+                    <button id="save-btn" onclick="downloadVCard()" class="flex flex-col items-center gap-2 group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 shadow-sm flex items-center justify-center text-brand-accent group-hover:bg-brand-accent group-hover:text-white transition-all duration-200">
+                            <i id="save-icon" data-lucide="contact" class="w-6 h-6"></i>
+                            <i id="loading-icon" data-lucide="loader-2" class="w-6 h-6 animate-spin hidden"></i>
+                        </div>
+                        <span id="save-text" class="text-[10px] text-brand-accent font-bold uppercase tracking-wide">Save</span>
+                    </button>
+                </div>
+
+                <!-- Current Mission Module (Inset) -->
+                <div class="px-6 mb-8 shrink-0">
+                    <div class="relative bg-brand-canvas rounded-2xl p-6 border-l-4 border-brand-accent overflow-hidden">
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i data-lucide="target" class="w-4 h-4 text-brand-accent"></i>
+                                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Current Mission</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm font-medium leading-relaxed italic">
+                                "Connecting 20 new business owners and program managers in the next 60 days to help them organize their physical spaces and inventory."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bio Section -->
+                <div class="px-8 mb-6 shrink-0">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">About</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed font-normal">
+                        My appreciation for organization & systems began as a Pediatric Nurse in the ER. Today, I apply that unique blend of clinical precision and practical space management to help families and businesses eliminate chaos.
+                    </p>
+                </div>
+
+                <!-- Simpli-FI OS Footer -->
+                <a href="#" target="_blank" class="block mt-auto py-4 text-center bg-brand-primary text-white">
+                    <div class="inline-flex items-center text-[10px] font-bold tracking-[0.2em] uppercase">
+                        <span class="mr-2">Powered by</span>
+                        <span class="text-brand-pop">Simpli-FI OS</span>
+                    </div>
+                </a>
+            </main>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!--         LANDSCAPE VIEW (Textured Neumorphic) -->
+    <!-- ========================================== -->
+    <div id="landscape-view" class="p-8 bg-brand-canvas bg-[radial-gradient(#214F4B_1px,transparent_1px)] [background-size:24px_24px]">
+        
+        <!-- The "Soft Paper" Business Card -->
+        <div class="relative w-full max-w-4xl aspect-[1.75/1] bg-neu-base bg-paper-noise rounded-[2.5rem] shadow-neu-float flex items-center justify-between border border-stone-300/50 transform overflow-hidden">
+            
+            <!-- Left Side: Identity & Info (Oatmeal Paper) -->
+            <div class="flex flex-col justify-between h-full w-2/3 p-12 relative z-10">
+                
+                <!-- Header -->
+                <div class="flex items-center gap-4">
+                     <!-- Logo Container (Extruded Soft UI) -->
+                     <div class="w-16 h-16 rounded-2xl bg-neu-base shadow-neu-flat flex items-center justify-center text-brand-primary border border-white/20">
+                        <span class="text-3xl font-serif italic font-bold">S</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight text-brand-primary/80">Simpli-FI <span class="text-brand-primary">Life</span></h2>
+                        <p class="text-xs text-brand-accent font-bold uppercase tracking-widest">Digital Identity</p>
+                    </div>
+                </div>
+
+                <!-- Main Identity (Pressed Green Ink) -->
+                <div>
+                    <h1 class="text-5xl lg:text-6xl font-black mb-2 text-pressed-green font-serif">Lindsey Lott</h1>
+                    <p class="text-brand-accent font-extrabold text-sm lg:text-base tracking-[0.25em] uppercase pl-1">Founder & Lead Organizer</p>
+                </div>
+
+                <!-- Info Grid (Pressed Soft UI) -->
+                <div class="grid grid-cols-2 gap-6 w-full">
+                    <div class="w-full px-6 py-4 rounded-xl bg-neu-base shadow-neu-pressed flex items-center gap-3 border border-transparent hover:border-white/50 transition-colors">
+                        <i data-lucide="phone" class="w-5 h-5 text-brand-primary"></i>
+                        <span class="text-sm font-bold text-gray-600">(214) 769-3343</span>
+                    </div>
+                    <div class="w-full px-6 py-4 rounded-xl bg-neu-base shadow-neu-pressed flex items-center gap-3 border border-transparent hover:border-white/50 transition-colors">
+                        <i data-lucide="globe" class="w-5 h-5 text-brand-primary"></i>
+                        <span class="text-sm font-bold text-gray-600">simpli-fi-life.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Green Brand Block (Texture) -->
+            <div class="w-1/3 h-full bg-brand-primary relative flex flex-col items-center justify-center pl-8">
+                
+                <!-- Noise Texture on Green -->
+                <div class="absolute inset-0 bg-paper-noise opacity-30 mix-blend-overlay pointer-events-none"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] opacity-10"></div>
+
+                <!-- Profile Circle (Floating) -->
+                <div class="relative mb-8 group cursor-pointer z-20" onclick="toggleQR()">
+                    <div class="w-56 h-56 rounded-full p-3 bg-brand-primary/50 backdrop-blur-sm border border-white/10 flex items-center justify-center transition-all duration-300 group-hover:scale-105 shadow-2xl">
+                        <div class="w-full h-full rounded-full overflow-hidden relative border-4 border-brand-canvas">
+                            <img src="https://raw.githubusercontent.com/simpli-fi-os/assets/abc740cc26a619c8153bbfeafbcb85c23879fcdf/lindsey-lott.jpg" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey&backgroundColor=E27D60'" alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <!-- Status Indicator -->
+                    <div class="absolute bottom-4 right-4 w-12 h-12 rounded-full bg-brand-accent shadow-lg flex items-center justify-center text-white border-2 border-brand-primary">
+                        <i data-lucide="check" class="w-6 h-6 stroke-[4]"></i>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="downloadVCard()" class="w-4/5 py-4 rounded-xl bg-brand-primary/80 backdrop-blur-md shadow-lg text-white font-extrabold text-sm uppercase tracking-wider hover:bg-brand-primary hover:text-brand-pop transition-all flex items-center justify-center gap-2 group z-20 border border-white/20">
+                    <span>Save Contact</span>
+                    <i data-lucide="arrow-down-to-line" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i>
+                </button>
+            
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!--          MODALS & SCRIPTS                  -->
+    <!-- ========================================== -->
+
+    <!-- Location Confirmation Modal (Added for Preview Environment) -->
+    <div id="confirmModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-xs w-full text-center scale-100 transition-transform">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Add Location?</h3>
+            <p class="text-sm text-gray-500 mb-6">Would you like to include your current location in the contact card?</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="handleLocationChoice(false)" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 font-bold text-xs uppercase tracking-wider hover:bg-gray-200">No</button>
+                <button onclick="handleLocationChoice(true)" class="px-4 py-2 rounded-xl bg-brand-primary text-white font-bold text-xs uppercase tracking-wider hover:bg-brand-primary/90 shadow-lg">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal (Portrait Only Logic) -->
+    <div id="qrModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-primary/90 backdrop-blur-sm transition-opacity duration-300" onclick="toggleQR()">
+            <div class="bg-neu-base p-8 rounded-[2rem] shadow-2xl max-w-sm w-full text-center relative transform transition-transform duration-300 scale-95 border border-white" onclick="event.stopPropagation()">
+            
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-brand-primary font-serif font-bold italic text-lg">Simpli-FI Life</span>
+                <button onclick="toggleQR()" class="w-10 h-10 rounded-full bg-neu-base shadow-neu-flat flex items-center justify-center text-gray-400 hover:text-brand-accent active:shadow-neu-pressed">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="bg-neu-base p-4 rounded-2xl shadow-neu-pressed mb-6 flex justify-center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://card.simpli-fi-life.com&color=214F4B" alt="Scan QR Code" class="w-48 h-48 mix-blend-multiply opacity-90">
+            </div>
+
+            <p class="text-gray-400 text-xs uppercase tracking-widest font-bold mb-6">Scan to Connect</p>
+
+            <!-- Photo Prompt UX -->
+            <div class="pt-4 border-t border-gray-200">
+                <label class="w-full py-4 rounded-xl bg-neu-base shadow-neu-flat text-brand-accent font-bold text-sm uppercase tracking-wider cursor-pointer active:shadow-neu-pressed flex items-center justify-center gap-2 hover:text-brand-primary transition-colors">
+                    <i data-lucide="camera" class="w-5 h-5"></i>
+                    <span id="camera-text">Take Selfie</span>
+                    <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handlePhotoCapture(this)">
+                </label>
+            </div>
+
+            </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // 1. Setup & Config
+        const container = document.getElementById('scroll-container');
+        const card = document.getElementById('main-card');
+        const physicsLayer = document.getElementById('physics-layer');
+        let photoBase64 = '';
+        const currentMission = "Connecting 20 new business owners and program managers in the next 60 days to help them organize their physical spaces and inventory.";
+
+        // 2. Gesture Handling (Portrait Only)
+        let startY = 0;
+        let pulling = false;
+        let pullDirection = null; 
+
+        container.addEventListener('touchstart', (e) => {
+            if (window.innerHeight < window.innerWidth) return; // Disable in landscape
+            if (container.scrollTop === 0 || 
+                container.scrollTop + container.clientHeight >= container.scrollHeight) {
+                startY = e.touches[0].pageY;
+                pulling = true;
+            }
+        }, { passive: true });
+
+        container.addEventListener('touchmove', (e) => {
+            if (!pulling) return;
+            if (window.innerHeight < window.innerWidth) return; // Disable in landscape
+            
+            const y = e.touches[0].pageY;
+            const delta = y - startY;
+            
+            // Pull Down (Top) - Boxes
+            if (delta > 0 && container.scrollTop <= 0) {
+                pullDirection = 'down';
+                e.preventDefault(); // Stop native scroll
+                const resistance = 0.4; // Feel of the pull
+                const translate = delta * resistance;
+                card.style.transform = `translateY(${translate}px)`;
+                
+                // Spawn boxes based on pull intensity
+                if (Math.random() < 0.3) spawnBox(translate); 
+            }
+            // Pull Up (Bottom) - Checkmarks
+            else if (delta < 0 && (container.scrollTop + container.clientHeight >= container.scrollHeight - 5)) {
+                pullDirection = 'up';
+                e.preventDefault();
+                const resistance = 0.4;
+                const translate = delta * resistance;
+                card.style.transform = `translateY(${translate}px)`;
+                
+                // Spawn checkmarks
+                if (Math.random() < 0.2) spawnCheck(Math.abs(translate));
+            }
+        }, { passive: false });
+
+        container.addEventListener('touchend', () => {
+            pulling = false;
+            pullDirection = null;
+            card.style.transform = ''; // Snap back
+            
+            // Clear items after a delay
+            setTimeout(() => {
+                physicsLayer.innerHTML = '';
+            }, 1000);
+        });
+
+        // 3. Animation Helpers
+        function spawnBox(offset) {
+            const box = document.createElement('div');
+            box.className = 'falling-box';
+            
+            // Randomize size
+            const size = 20 + Math.random() * 30;
+            box.style.width = `${size}px`;
+            box.style.height = `${size}px`;
+            
+            // Randomize position
+            const x = Math.random() * window.innerWidth;
+            box.style.left = `${x}px`;
+            
+            // Start position (above viewport)
+            box.style.top = `-50px`;
+            
+            // Physics Rotation
+            const rotation = Math.random() * 360;
+            box.style.transform = `rotate(${rotation}deg)`;
+            
+            physicsLayer.appendChild(box);
+            
+            // Animate Drop
+            const duration = 500 + Math.random() * 500;
+            const targetY = offset + 50 + (Math.random() * 50); // Fall to gap area
+            
+            box.animate([
+                { top: '-50px', transform: `rotate(${rotation}deg)` },
+                { top: `${targetY}px`, transform: `rotate(${rotation + 90}deg)` }
+            ], {
+                duration: duration,
+                easing: 'cubic-bezier(0.25, 1, 0.5, 1)', // Bounce effect
+                fill: 'forwards'
+            });
+        }
+
+        function spawnCheck(offset) {
+            const check = document.createElement('div');
+            check.className = 'rising-check';
+            check.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            
+            // Randomize size and color opacity
+            const scale = 0.8 + Math.random() * 1.5;
+            check.style.transform = `scale(${scale})`;
+            check.style.opacity = 0.5 + Math.random() * 0.5;
+            
+            // Randomize position
+            const x = Math.random() * window.innerWidth;
+            check.style.left = `${x}px`;
+            check.style.bottom = `-50px`;
+            
+            physicsLayer.appendChild(check);
+            
+            // Animate Rise
+            const duration = 1000 + Math.random() * 1000;
+            const targetY = offset + 100 + (Math.random() * 100);
+            
+            check.animate([
+                { bottom: '-50px', opacity: 1, transform: `scale(${scale}) translateY(0)` },
+                { bottom: `${targetY}px`, opacity: 0, transform: `scale(${scale}) translateY(-50px)` }
+            ], {
+                duration: duration,
+                easing: 'ease-out',
+                fill: 'forwards'
+            });
+        }
+
+
+        // 4. Existing Logic (Image Loading, VCard, etc)
+        window.addEventListener('load', async () => {
+            const imgElement = document.getElementById('profile-photo');
+            const imgSrc = imgElement.src;
+            try {
+                const response = await fetch(imgSrc);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const reader = new FileReader();
+                    reader.onloadend = () => { photoBase64 = reader.result.split(',')[1]; };
+                    reader.readAsDataURL(blob);
+                }
+            } catch (e) { console.log("Image load error:", e); }
+        });
+
+        function toggleQR() {
+            const modal = document.getElementById('qrModal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.add('modal-enter-active');
+                    modal.classList.remove('modal-enter');
+                }, 10);
+            } else {
+                modal.classList.remove('modal-enter-active');
+                modal.classList.add('modal-exit-active');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('modal-exit-active');
+                }, 200);
+            }
+        }
+
+        function handlePhotoCapture(input) {
+            if (input.files && input.files[0]) {
+                const btnText = document.getElementById('camera-text');
+                btnText.innerText = "Photo Captured!";
+                setTimeout(() => { btnText.innerText = "Take Selfie"; }, 3000);
+            }
+        }
+
+        function setLoading(isLoading) {
+            const icon = document.getElementById('save-icon');
+            const loader = document.getElementById('loading-icon');
+            const text = document.getElementById('save-text');
+            if (isLoading) {
+                icon.classList.add('hidden');
+                loader.classList.remove('hidden');
+                text.innerText = "Saving...";
+            } else {
+                icon.classList.remove('hidden');
+                loader.classList.add('hidden');
+                text.innerText = "Save";
+            }
+        }
+
+        function downloadVCard() {
+             const modal = document.getElementById('confirmModal');
+             modal.classList.remove('hidden');
+        }
+
+        function handleLocationChoice(includeLocation) {
+            const modal = document.getElementById('confirmModal');
+            modal.classList.add('hidden');
+            
+            // Proceed with generation logic
+            const generateFile = (locationNote = "") => {
+                setLoading(true);
+                const today = new Date().toISOString().replace(/[-:.]/g, '').split('T')[0];
+                let vcard = `BEGIN:VCARD
+VERSION:3.0
+N:Lott;Lindsey;;;
+FN:Lindsey Lott
+ORG:Simpli-FI Life
+TITLE:Founder & Lead Organizer
+TEL;TYPE=CELL:(214) 769-3343
+EMAIL:Lindsey@simpli-fi-life.com
+URL:https://new.simpli-fi-life.com
+item1.URL:https://id.simpli-fi-os.com/lindsey-lott
+item1.X-ABLabel:Simpli-FI ID
+NOTE:Current Mission: ${currentMission} ${locationNote} | Powered by Simpli-FI OS
+REV:${today}
+`;
+                if (photoBase64) vcard += `PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}\n`;
+                vcard += `END:VCARD`;
+
+                const blob = new Blob([vcard], { type: 'text/vcard' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'Lindsey_Lott_Simpli-FI.vcf');
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    setLoading(false);
+                }, 100);
+            };
+
+            if (includeLocation) {
+                setLoading(true);
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(4);
+                        const long = position.coords.longitude.toFixed(4);
+                        generateFile(`| Met at: ${lat}, ${long}`);
+                    },
+                    (error) => { 
+                        generateFile(""); 
+                    }
+                );
+            } else {
+                generateFile("");
+            }
+        }
+    </script>
+</body>
+</html>
