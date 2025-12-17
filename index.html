@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simpli-FI ID | The Operating System for Identity</title>
+    <meta name="description" content="Simpli-FI ID is the digital command center for professionals and enterprise teams. Track leads, distribute resources, and own your network.">
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Simpli-FI ID | The Operating System for Identity">
+    <meta property="og:description" content="Stop handing out paper. Start deploying intelligence.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/simpli-fi-os/simpli-fi-id/d59a8cb075df62d56e3ba6549131ae6cd773dbb1/ID.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/simpli-fi-os/simpli-fi-id/d59a8cb075df62d56e3ba6549131ae6cd773dbb1/ID.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: { navy: '#1e293b', gold: '#fbbf24', teal: '#214F4B', coral: '#E27D60', offwhite: '#F9FAFB' },
+                    animation: { 'scan': 'scan 3s linear infinite' },
+                    keyframes: { scan: { '0%': { backgroundPosition: '200% 0' }, '100%': { backgroundPosition: '0 0' } } }
+                }
+            }
+        }
+    </script>
+    <style>
+        .mesh-gradient { background-image: radial-gradient(at 0% 0%, rgba(33, 79, 75, 0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(251, 191, 36, 0.08) 0px, transparent 50%); }
+        /* Mobile Menu Animation */
+        #mobile-menu { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+        #mobile-menu.open { max-height: 400px; opacity: 1; }
+    </style>
+</head>
+<body class="bg-offwhite text-navy font-sans antialiased mesh-gradient min-h-screen flex flex-col">
+
+    <!-- NAVIGATION -->
+    <nav class="w-full py-6 sticky top-0 z-50 backdrop-blur-md bg-offwhite/90 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
+            <a href="#" class="flex items-center gap-3 group z-50">
+                <!-- ID LOGO (Updated) -->
+                <div class="w-10 h-10 bg-navy text-gold rounded-lg flex items-center justify-center font-serif text-xl leading-none tracking-[0.25em] pl-1 shadow-md group-hover:scale-105 transition" style="font-family: 'Playfair Display', serif;">
+                    ID
+                </div>
+                <span class="font-serif font-bold text-navy text-lg tracking-tight">Simpli-FI <span class="text-gold">ID</span></span>
+            </a>
+
+            <!-- Desktop Links -->
+            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-600">
+                <a href="#mission" class="hover:text-navy transition">Mission</a>
+                <a href="#features" class="hover:text-navy transition">Features</a>
+                <a href="#pricing" class="hover:text-navy transition">Pricing</a>
+            </div>
+
+            <!-- Desktop CTAs -->
+            <div class="hidden md:flex gap-3">
+                <a href="intake_form.html" class="px-5 py-2.5 border border-navy text-navy text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-gray-50 transition">
+                    Individual ID
+                </a>
+                <a href="enterprise_setup.html" class="px-5 py-2.5 bg-navy text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-teal transition shadow-lg transform hover:-translate-y-0.5">
+                    Enterprise Setup
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-navy p-2 focus:outline-none z-50">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+
+            <!-- Mobile Menu Dropdown -->
+            <div id="mobile-menu" class="absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-xl md:hidden flex flex-col px-6 pb-6 pt-2">
+                <a href="#mission" class="py-3 text-slate-600 hover:text-navy font-medium border-b border-gray-50" onclick="toggleMenu()">Mission</a>
+                <a href="#features" class="py-3 text-slate-600 hover:text-navy font-medium border-b border-gray-50" onclick="toggleMenu()">Features</a>
+                <a href="#pricing" class="py-3 text-slate-600 hover:text-navy font-medium mb-4" onclick="toggleMenu()">Pricing</a>
+                <div class="flex flex-col gap-3">
+                    <a href="intake_form.html" class="w-full text-center px-5 py-3 border border-navy text-navy text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-gray-50 transition">
+                        Individual ID
+                    </a>
+                    <a href="enterprise_setup.html" class="w-full text-center px-5 py-3 bg-navy text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-teal transition shadow-lg">
+                        Enterprise Setup
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="pt-12 md:pt-20 pb-20 md:pb-24 text-center px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 shadow-sm mb-8">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[10px] font-bold tracking-widest text-navy uppercase">System Status: Operational</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-7xl font-serif text-navy mb-6 tracking-tight leading-tight">
+                The Business Card is Dead.<br>
+                <span class="italic text-teal">Long Live the Network.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-500 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+                Simpli-FI ID is not just a digital card. It is a <strong>connected operating system</strong> that tracks leads, distributes resources, and proves ROI for every handshake.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center px-4">
+                <a href="intake_form.html" class="px-8 py-4 bg-navy text-white font-bold rounded-xl shadow-xl hover:bg-teal hover:-translate-y-1 transition flex items-center justify-center gap-2">
+                    Generate My ID <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <a href="enterprise_setup.html" class="px-8 py-4 bg-white text-navy font-bold rounded-xl shadow-sm border border-gray-200 hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                    Deploy to Team
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MISSION SECTION -->
+    <section id="mission" class="py-16 md:py-20 bg-white border-y border-gray-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+                <div class="order-2 md:order-1">
+                    <h2 class="text-xs font-bold text-gold uppercase tracking-widest mb-2">The Mission</h2>
+                    <h3 class="text-3xl font-serif text-navy mb-6">Why we built the OS.</h3>
+                    <p class="text-slate-500 mb-6 leading-relaxed">
+                        Professionals hand out paper cards that get lost in pockets. Sales teams email PDFs that get buried in inboxes. The connection is broken before it begins.
+                    </p>
+                    <p class="text-slate-500 mb-8 leading-relaxed">
+                        <strong>Simpli-FI OS bridges the gap.</strong> We turn your identity into a deployment mechanism. When you share your card, you aren't just sharing a number; you are opening a channel for data, resources, and lead capture.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center text-teal shrink-0"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                            <div>
+                                <h4 class="font-bold text-navy">Frictionless Distribution</h4>
+                                <p class="text-sm text-slate-500">Put your entire sales deck or product catalog in a client's pocket instantly.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold/80 shrink-0"><i data-lucide="bar-chart-2" class="w-5 h-5"></i></div>
+                            <div>
+                                <h4 class="font-bold text-navy">Invisible Intelligence</h4>
+                                <p class="text-sm text-slate-500">Track exactly when and where your resources are accessed by prospects.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Visual -->
+                <div class="relative order-1 md:order-2">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-teal/20 to-gold/20 rounded-3xl blur-2xl transform rotate-3"></div>
+                    <img src="https://files.constantcontact.com/3720c3fd901/040f4544-8335-483d-80b4-b42f8d718fba.png" alt="Simpli-FI OS Dashboard Interface on Mobile" class="relative rounded-3xl shadow-2xl border-4 border-white rotate-[-3deg] hover:rotate-0 transition duration-500 w-full max-w-md mx-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING & COMPARISON -->
+    <section id="pricing" class="py-20 md:py-24 max-w-7xl mx-auto px-6">
+        <div class="text-center mb-12 md:mb-16">
+            <h2 class="text-3xl font-serif text-navy mb-4">Choose Your Clearance Level</h2>
+            <p class="text-slate-500">From digital business cards to enterprise command centers.</p>
+        </div>
+
+        <!-- 4-GRID Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+            
+            <!-- Free Tier -->
+            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl transition flex flex-col">
+                <span class="text-[10px] font-bold bg-gray-100 text-slate-500 w-max px-3 py-1 rounded-full uppercase tracking-wider mb-4">Ambassador</span>
+                <div class="mb-2"><span class="text-3xl font-bold text-navy">Free</span></div>
+                <p class="text-xs text-slate-400 mb-6">For students & networking.</p>
+                <ul class="space-y-3 text-xs text-gray-600 mb-8 flex-1">
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-teal"></i> Digital ID</li>
+                    <li class="flex items-center gap-2 text-gray-400"><i data-lucide="minus" class="w-3 h-3"></i> Ad-Supported</li>
+                </ul>
+                <a href="intake_form.html" class="block w-full py-3 bg-gray-100 text-slate-600 font-bold text-center rounded-xl hover:bg-gray-200 transition text-xs">Claim Free ID</a>
+            </div>
+
+            <!-- Pro Tier -->
+            <div class="bg-navy p-6 rounded-2xl border border-navy shadow-2xl relative flex flex-col transform lg:-translate-y-4">
+                <div class="absolute top-0 right-0 bg-gold text-navy text-[10px] font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl uppercase">Best Value</div>
+                <span class="text-[10px] font-bold bg-white/10 text-white w-max px-3 py-1 rounded-full uppercase tracking-wider mb-4">Professional</span>
+                <div class="mb-2"><span class="text-3xl font-bold text-white">$19</span> <span class="text-xs text-slate-400">/ once</span></div>
+                <p class="text-xs text-slate-300 mb-6">Own your brand. No ads.</p>
+                <ul class="space-y-3 text-xs text-gray-300 mb-8 flex-1">
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-gold"></i> <strong>Save Contact Button</strong></li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-gold"></i> Custom Hex Colors</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-gold"></i> App Icon</li>
+                </ul>
+                <a href="intake_form.html" class="block w-full py-3 bg-gold text-navy font-bold text-center rounded-xl hover:bg-white transition text-xs">Go Professional</a>
+            </div>
+
+            <!-- Founder Tier -->
+            <div class="bg-white p-6 rounded-2xl border-2 border-teal/10 shadow-lg flex flex-col">
+                <span class="text-[10px] font-bold bg-teal/10 text-teal w-max px-3 py-1 rounded-full uppercase tracking-wider mb-4">Founder</span>
+                <div class="mb-2"><span class="text-3xl font-bold text-navy">$49</span> <span class="text-xs text-slate-400">+ $5/mo</span></div>
+                <p class="text-xs text-slate-400 mb-6">High-end sales & realty.</p>
+                <ul class="space-y-3 text-xs text-gray-600 mb-8 flex-1">
+                    <li class="flex items-center gap-2"><i data-lucide="star" class="w-3 h-3 text-gold"></i> <strong>Resource Catalog</strong></li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-teal"></i> Personal Dashboard</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-teal"></i> Reverse CRM</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-teal"></i> Retargeting Pixel</li>
+                </ul>
+                <a href="intake_form.html" class="block w-full py-3 bg-teal text-white font-bold text-center rounded-xl hover:bg-teal/90 transition text-xs">Become Founder</a>
+            </div>
+
+            <!-- Enterprise Tier -->
+            <div class="bg-gradient-to-b from-slate-900 to-navy p-6 rounded-2xl border border-slate-700 shadow-lg flex flex-col">
+                <span class="text-[10px] font-bold bg-white/10 text-white w-max px-3 py-1 rounded-full uppercase tracking-wider mb-4">Enterprise</span>
+                <div class="mb-2"><span class="text-3xl font-bold text-white">$99</span> <span class="text-xs text-slate-400">+ $9/user</span></div>
+                <p class="text-xs text-slate-400 mb-6">Teams & Agencies.</p>
+                <ul class="space-y-3 text-xs text-slate-300 mb-8 flex-1">
+                    <li class="flex items-center gap-2"><i data-lucide="shield" class="w-3 h-3 text-white"></i> <strong>Admin Command</strong></li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-slate-400"></i> Central Resource Lib</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-slate-400"></i> Team Analytics</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-slate-400"></i> Bulk Roster Import</li>
+                </ul>
+                <a href="enterprise_setup.html" class="block w-full py-3 border border-white/20 text-white font-bold text-center rounded-xl hover:bg-white/10 transition text-xs">Deploy System</a>
+            </div>
+
+        </div>
+
+        <!-- COMPREHENSIVE COMPARISON TABLE -->
+        <div class="overflow-x-auto bg-white rounded-3xl shadow-lg border border-gray-200">
+            <table class="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-gray-200">
+                        <th class="p-6 text-xs font-bold text-slate-500 uppercase tracking-widest w-1/4">Feature</th>
+                        <th class="p-6 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">Free</th>
+                        <th class="p-6 text-xs font-bold text-navy uppercase tracking-widest text-center">Pro ($19)</th>
+                        <th class="p-6 text-xs font-bold text-teal uppercase tracking-widest text-center">Founder</th>
+                        <th class="p-6 text-xs font-bold text-navy uppercase tracking-widest text-center bg-navy/5">Enterprise</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-slate-600 divide-y divide-gray-100">
+                    <!-- Core Identity -->
+                    <tr class="bg-gray-50/50"><td colspan="5" class="p-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-6">Core Identity</td></tr>
+                    <tr>
+                        <td class="p-6 font-medium text-navy">Included ID Type</td>
+                        <td class="p-6 text-center text-slate-400">Ambassador</td>
+                        <td class="p-6 text-center text-navy font-bold">Professional</td>
+                        <td class="p-6 text-center text-teal font-bold">Founder</td>
+                        <td class="p-6 text-center text-teal font-bold bg-navy/5">Founder (All Users)</td>
+                    </tr>
+                    <tr>
+                        <td class="p-6 font-medium">URL Structure</td>
+                        <td class="p-6 text-center text-slate-400">Randomized</td>
+                        <td class="p-6 text-center">Vanity Slug</td>
+                        <td class="p-6 text-center font-bold text-navy">Custom Domain</td>
+                        <td class="p-6 text-center font-bold text-navy bg-navy/5">Custom Domain</td>
+                    </tr>
+                    <tr>
+                        <td class="p-6 font-medium">Ad Status</td>
+                        <td class="p-6 text-center text-red-400">Footer Ads</td>
+                        <td class="p-6 text-center text-green-600">Ad-Free</td>
+                        <td class="p-6 text-center text-green-600">Ad-Free</td>
+                        <td class="p-6 text-center text-green-600 bg-navy/5">Ad-Free</td>
+                    </tr>
+                    <tr>
+                        <td class="p-6 font-medium">Save Contact (vCard)</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                        <td class="p-6 text-center"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                        <td class="p-6 text-center bg-navy/5"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                    </tr>
+
+                    <!-- Branding -->
+                    <tr class="bg-gray-50/50"><td colspan="5" class="p-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-6">Branding</td></tr>
+                    <tr>
+                        <td class="p-6 font-medium">Custom Hex Colors</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                        <td class="p-6 text-center"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                        <td class="p-6 text-center bg-navy/5"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="p-6 font-medium">Custom Home Screen Icon</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                        <td class="p-6 text-center"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                        <td class="p-6 text-center bg-navy/5"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="p-6 font-medium">Social Share Preview (OG)</td>
+                        <td class="p-6 text-center text-slate-300">Generic</td>
+                        <td class="p-6 text-center text-slate-300">Generic</td>
+                        <td class="p-6 text-center font-bold text-navy">Custom Branded</td>
+                        <td class="p-6 text-center font-bold text-navy bg-navy/5">Custom Branded</td>
+                    </tr>
+
+                    <!-- Intelligence -->
+                    <tr class="bg-gray-50/50"><td colspan="5" class="p-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-6">Intelligence Suite</td></tr>
+                    <tr>
+                        <td class="p-6 font-medium">Resource Catalog</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center font-bold text-teal">Unlimited</td>
+                        <td class="p-6 text-center font-bold text-teal bg-navy/5">Centralized Library</td>
+                    </tr>
+                    <tr>
+                        <td class="p-6 font-medium">Admin Dashboard</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                        <td class="p-6 text-center bg-navy/5 font-bold text-navy">Team Command</td>
+                    </tr>
+                    <tr>
+                        <td class="p-6 font-medium">Team Roster (Bulk CSV)</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center text-slate-300">—</td>
+                        <td class="p-6 text-center bg-navy/5"><i data-lucide="check" class="w-4 h-4 mx-auto text-teal"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy py-12 border-t border-white/5 text-white">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-white/10 rounded flex items-center justify-center font-serif font-bold">S</div>
+                <span class="font-bold">Simpli-FI OS</span>
+            </div>
+            <div class="flex gap-8 text-sm text-slate-400">
+                <a href="#" class="hover:text-white transition">Login</a>
+                <a href="#" class="hover:text-white transition">Support</a>
+                <a href="#" class="hover:text-white transition">Privacy</a>
+            </div>
+            <div class="text-xs text-slate-600 font-mono">
+                SYSTEM_ID: V2.5 // LIVE
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        lucide.createIcons();
+
+        // Mobile Menu Toggle Logic
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const btn = document.getElementById('mobile-menu-btn');
+            
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
+                // Icon back to menu
+                btn.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+            } else {
+                menu.classList.add('open');
+                // Icon to X
+                btn.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
+            }
+            lucide.createIcons();
+        }
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMenu);
+    </script>
+</body>
+</html>
